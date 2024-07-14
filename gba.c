@@ -7,9 +7,10 @@ u32 vBlankCounter = 0;
   Wait until the start of the next VBlank. This is useful to avoid tearing.
   Completing this function is required.
 */
+/**
+ * implemented using lab slides
+ */
 void waitForVBlank(void) {
-  // TODO: IMPLEMENT
-
   // (1)
   // Write a while loop that loops until we're NOT in vBlank anymore:
   // (This prevents counting one VBlank more than once if your app is too fast)
