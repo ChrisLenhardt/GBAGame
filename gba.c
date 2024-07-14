@@ -71,6 +71,9 @@ void drawFullScreenImageDMA(const u16 *image) {
   Completing this function is required.
   This function can be completed using `height` DMA calls. Solutions that use more DMA calls will not get credit.
 */
+/**
+ * Implemented with the code used in lab
+ */
 void drawImageDMA(int row, int col, int width, int height, const u16 *image) {
   for (int r = 0; r < height; r++) {
     DMA[3].src = &image[OFFSET(r,0,width)];
