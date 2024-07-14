@@ -14,7 +14,7 @@ void waitForVBlank(void) {
   // (1)
   // Write a while loop that loops until we're NOT in vBlank anymore:
   // (This prevents counting one VBlank more than once if your app is too fast)
-  while(SCANLINECOUNTER > 160);
+  while(SCANLINECOUNTER >= 160);
 
   // (2)
   // Write a while loop that keeps going until we're in vBlank:
@@ -38,10 +38,13 @@ int randint(int min, int max) { return (qran() * (max - min) >> 15) + min; }
   Using DMA is NOT recommended. (In fact, using DMA with this function would be really slow!)
 */
 void setPixel(int row, int col, u16 color) {
-  // TODO: IMPLEMENT
-  UNUSED(row);
-  UNUSED(col);
-  UNUSED(color);
+  *((volatile unsigned char *)(&REG_DISPCNT)) = MODE3;
+  *((volatile unsigned char *)(&REG_DISPCNT) + 1) = 0x04;
+
+
+
+	// Write pixel colours into VRAM
+	videoBuffer[row*240 + col] = color; // X = 115, Y = 80, C = 000000000011111 = R
 }
 
 /*

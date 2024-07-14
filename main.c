@@ -31,8 +31,6 @@ int main(void) {
 
   // Load initial application state
   enum gba_state state = START;
-          drawImageDMA(10,20,50,37,garbage);
-
 
   while (1) {
     currentButtons = BUTTONS; // Load the current state of the buttons
@@ -40,16 +38,11 @@ int main(void) {
     /* TODO: */
     // Manipulate the state machine below as needed //
     // NOTE: Call waitForVBlank() before you draw
-            drawImageDMA(10,20,50,37,garbage);
-
 
     switch (state) {
       case START:
-        drawImageDMA(10,20,50,37,garbage);
-        // state = ?
         break;
       case PLAY:
-                drawImageDMA(10,20,50,37,garbage);
         // state = ?
         break;
       case WIN:
