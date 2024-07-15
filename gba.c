@@ -48,7 +48,6 @@ void setPixel(int row, int col, u16 color) {
   This function can be completed using `height` DMA calls. 
 */
 void drawRectDMA(int row, int col, int width, int height, volatile u16 color) {
-  DMA[3].cnt = 0;
   for (int r = 0; r < height; r++) {
     DMA[3].src = &color;
     DMA[3].dst = &videoBuffer[OFFSET(row + r, col, WIDTH)];
@@ -63,8 +62,11 @@ void drawRectDMA(int row, int col, int width, int height, volatile u16 color) {
   ]
 */
 void drawFullScreenImageDMA(const u16 *image) {
-  // TODO: IMPLEMENT
-  UNUSED(image);
+  for (int r = 0; r < HEIGHT; r++) {
+    DMA[3].src = &image[OFFSET(r,0,WIDTH)]; 
+    DMA[3].dst = &videoBuffer[OFFSET(r, HEIGHT, WIDTH)];
+    DMA[3].cnt = (WIDTH) | DMA_SOURCE_INCREMENT | DMA_DESTINATION_INCREMENT | DMA_16 | DMA_ON;
+  }
 }
 
 /*
@@ -79,7 +81,6 @@ void drawFullScreenImageDMA(const u16 *image) {
  */
 void drawImageDMA(int row, int col, int width, int height, const u16 *image) {
   for (int r = 0; r < height; r++) {
-    DMA[3].cnt = 0; //shut off prev transfer (from toic)
     DMA[3].src = &image[OFFSET(r,0,width)]; 
     DMA[3].dst = &videoBuffer[OFFSET(row + r, col, WIDTH)];
     DMA[3].cnt = (width) | DMA_SOURCE_INCREMENT | DMA_DESTINATION_INCREMENT | DMA_16 | DMA_ON;
@@ -93,12 +94,11 @@ void drawImageDMA(int row, int col, int width, int height, const u16 *image) {
   This function can be completed using `height` DMA calls.
 */
 void undrawImageDMA(int row, int col, int width, int height, const u16 *image) {
-  // TODO: IMPLEMENT
-  UNUSED(row);
-  UNUSED(col);
-  UNUSED(width);
-  UNUSED(height);
-  UNUSED(image);
+  for (int i = 0; i < height; i++) {
+    DMA[3].src = &image[OFFSET(row + i,0,width)];
+    DMA[3].dst = &videoBuffer[OFFSET(row + i, col, WIDTH)];
+    DMA[3].cnt = (width) | DMA_SOURCE_INCREMENT | DMA_DESTINATION_INCREMENT | DMA_16 | DMA_ON;
+  }
 }
 
 /*
@@ -106,7 +106,6 @@ void undrawImageDMA(int row, int col, int width, int height, const u16 *image) {
   This function can be completed using a single DMA call.
 */
 void fillScreenDMA(volatile u16 color) {
-  // TODO: IMPLEMENT
   DMA[3].cnt = 0;
   DMA[3].src = &color;
   DMA[3].dst = videoBuffer;
