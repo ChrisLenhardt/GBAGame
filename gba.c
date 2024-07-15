@@ -19,7 +19,7 @@ void waitForVBlank(void) {
   while(SCANLINECOUNTER >= 160);
   // (2)
   // Write a while loop that keeps going until we're in vBlank:
-  while(SCANLINECOUNTER != 160);
+  while(SCANLINECOUNTER < 160);
   // (3)
   // Finally, increment the vBlank counter:
   vBlankCounter++;
