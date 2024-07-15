@@ -15,11 +15,9 @@ void waitForVBlank(void) {
   // Write a while loop that loops until we're NOT in vBlank anymore:
   // (This prevents counting one VBlank more than once if your app is too fast)
   while(SCANLINECOUNTER >= 160);
-
   // (2)
   // Write a while loop that keeps going until we're in vBlank:
   while(SCANLINECOUNTER != 160);
-
   // (3)
   // Finally, increment the vBlank counter:
   vBlankCounter++;
@@ -40,9 +38,6 @@ int randint(int min, int max) { return (qran() * (max - min) >> 15) + min; }
 void setPixel(int row, int col, u16 color) {
   *((volatile unsigned char *)(&REG_DISPCNT)) = MODE3;
   *((volatile unsigned char *)(&REG_DISPCNT) + 1) = 0x04;
-
-
-
 	// Write pixel colours into VRAM
 	videoBuffer[row*240 + col] = color; // X = 115, Y = 80, C = 000000000011111 = R
 }
@@ -82,8 +77,19 @@ void drawFullScreenImageDMA(const u16 *image) {
  * Implemented with the code used in lab
  */
 void drawImageDMA(int row, int col, int width, int height, const u16 *image) {
+  /**
+   * Write up to test my knowledge:
+   * 
+   * For each pixel take the assign the DMA source value to the address of the image column
+   * 
+   * That data will be copied to the destination row by row
+   * 
+   * Configure control signal
+   * 
+   * DMA is a struct where you can save the different values into the registers
+   */
   for (int r = 0; r < height; r++) {
-    DMA[3].src = &image[OFFSET(r,0,width)];
+    DMA[3].src = &image[OFFSET(r,0,width)]; 
     DMA[3].dst = &videoBuffer[OFFSET(row + r, col, WIDTH)];
     DMA[3].cnt = width | DMA_SOURCE_INCREMENT | DMA_DESTINATION_INCREMENT | DMA_16 | DMA_ON;
   }
