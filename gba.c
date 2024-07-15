@@ -3,6 +3,8 @@
 volatile unsigned short *videoBuffer = (volatile unsigned short *) 0x6000000;
 u32 vBlankCounter = 0;
 
+
+
 /*
   Wait until the start of the next VBlank. This is useful to avoid tearing.
   Completing this function is required.
@@ -36,8 +38,6 @@ int randint(int min, int max) { return (qran() * (max - min) >> 15) + min; }
   Using DMA is NOT recommended. (In fact, using DMA with this function would be really slow!)
 */
 void setPixel(int row, int col, u16 color) {
-  *((volatile unsigned char *)(&REG_DISPCNT)) = MODE3;
-  *((volatile unsigned char *)(&REG_DISPCNT) + 1) = 0x04;
 	// Write pixel colours into VRAM
 	videoBuffer[row*240 + col] = color; // X = 115, Y = 80, C = 000000000011111 = R
 }
@@ -48,18 +48,19 @@ void setPixel(int row, int col, u16 color) {
   This function can be completed using `height` DMA calls. 
 */
 void drawRectDMA(int row, int col, int width, int height, volatile u16 color) {
-  // TODO: IMPLEMENT
-  UNUSED(row);
-  UNUSED(col);
-  UNUSED(width);
-  UNUSED(height);
-  UNUSED(color);
+  DMA[3].cnt = 0;
+  for (int r = 0; r < height; r++) {
+    DMA[3].src = &color;
+    DMA[3].dst = &videoBuffer[OFFSET(row + r, col, WIDTH)];
+    DMA[3].cnt = width | DMA_SOURCE_FIXED | DMA_DESTINATION_INCREMENT | DMA_16 | DMA_ON;
+  }
 }
 
 /*
   Draws a fullscreen image to the video buffer.
   The image passed in must be of size WIDTH * HEIGHT.
   This function can be completed using a single DMA call.
+  ]
 */
 void drawFullScreenImageDMA(const u16 *image) {
   // TODO: IMPLEMENT
@@ -77,21 +78,11 @@ void drawFullScreenImageDMA(const u16 *image) {
  * Implemented with the code used in lab
  */
 void drawImageDMA(int row, int col, int width, int height, const u16 *image) {
-  /**
-   * Write up to test my knowledge:
-   * 
-   * For each pixel take the assign the DMA source value to the address of the image column
-   * 
-   * That data will be copied to the destination row by row
-   * 
-   * Configure control signal
-   * 
-   * DMA is a struct where you can save the different values into the registers
-   */
   for (int r = 0; r < height; r++) {
+    DMA[3].cnt = 0; //shut off prev transfer (from toic)
     DMA[3].src = &image[OFFSET(r,0,width)]; 
     DMA[3].dst = &videoBuffer[OFFSET(row + r, col, WIDTH)];
-    DMA[3].cnt = width | DMA_SOURCE_INCREMENT | DMA_DESTINATION_INCREMENT | DMA_16 | DMA_ON;
+    DMA[3].cnt = (width) | DMA_SOURCE_INCREMENT | DMA_DESTINATION_INCREMENT | DMA_16 | DMA_ON;
   }
 }
 
@@ -116,7 +107,10 @@ void undrawImageDMA(int row, int col, int width, int height, const u16 *image) {
 */
 void fillScreenDMA(volatile u16 color) {
   // TODO: IMPLEMENT
-  UNUSED(color);
+  DMA[3].cnt = 0;
+  DMA[3].src = &color;
+  DMA[3].dst = videoBuffer;
+  DMA[3].cnt = (WIDTH * HEIGHT) | DMA_SOURCE_FIXED | DMA_DESTINATION_INCREMENT | DMA_16 | DMA_ON;
 }
 
 /* STRING-DRAWING FUNCTIONS (provided) */

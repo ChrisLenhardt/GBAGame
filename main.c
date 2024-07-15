@@ -24,7 +24,8 @@ enum gba_state {
 int main(void) {
   /* TODO: */
   // Manipulate REG_DISPCNT here to set Mode 3. //
-
+  *((volatile unsigned char *)(&REG_DISPCNT)) = MODE3;
+  *((volatile unsigned char *)(&REG_DISPCNT) + 1) = 0x04;
   // Save current and previous state of button input.
   u32 previousButtons = BUTTONS;
   u32 currentButtons = BUTTONS;
@@ -41,6 +42,10 @@ int main(void) {
 
     switch (state) {
       case START:
+        waitForVBlank();
+        fillScreenDMA(0x003F);
+        drawRectDMA(50,50,50,50, 0xF300);
+        //draw red square 
         break;
       case PLAY:
         // state = ?
