@@ -37,8 +37,10 @@ int main(void) {
   enum gba_state state = START;
   enum gba_state prevState = START;
   drawImageDMA(0,0,240,160,shallowsleep);
-  player p1 = {(WIDTH / 2 + 4), (HEIGHT / 2 + 3), 4, 3, GREEN};
+  struct enemy e1 = {0,0,5,5,RED};
+  struct player p1 = {(WIDTH / 2 + 4), (HEIGHT / 2 + 3), 4, 3, GREEN};
   struct oldPos oldPos;
+  struct oldPos oldPosEnemy;
   while (1) {
     currentButtons = BUTTONS; // Load the current state of the buttons
 
@@ -69,11 +71,16 @@ int main(void) {
             prevState = PLAY;
             state = START;
         }
+          enemy *e1p = &e1;
           player *p1p = &p1;
           oldPos = PlayState(p1p);
+          oldPosEnemy = enemyPlayState(e1p, p1p);
           waitForVBlank();
           drawRectDMA(p1p->y,p1p->x,p1p->w,p1p->h,p1p->playerColor);
+          drawRectDMA(e1p->y,e1p->x,e1p->w,e1p->h,e1p->playerColor);
           drawRectDMA(oldPos.oldy,oldPos.oldx,oldPos.oldw,oldPos.oldh,GRAY);
+          drawRectDMA(oldPosEnemy.oldy,oldPosEnemy.oldx,oldPosEnemy.oldw,oldPosEnemy.oldh,GRAY);
+
         
         
         break;
