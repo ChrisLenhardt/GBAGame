@@ -40,11 +40,11 @@ oldPos PlayState(player *p1) {
             if (oldy > p1->y) {
                 oldh--;
             } else {
-                oldh++;
+                oldh++;;
             }
         }
 
-        struct oldPos oldpos = {oldy, oldx, oldw, oldh};
+        struct oldPos oldpos = {oldy, oldx, oldw+=3, oldh+=3};
         return oldpos;
 }
 
@@ -98,7 +98,7 @@ oldPos enemyPlayState(enemy *e1, player *p1) {
         struct oldPos oldpos = {oldy, oldx, oldw, oldh};
         return oldpos;
 }
-int isConsumed(player *p1, enemy *e1) {
+u16 isConsumed(player *p1, enemy *e1) {
     int diffx = (p1->x - e1->x) < 0 ? 240 : (p1->x - e1->x);
     int diffy = (p1->y - e1->y) < 0 ? 160 : (p1->y - e1->y);
 
@@ -106,4 +106,28 @@ int isConsumed(player *p1, enemy *e1) {
         return 1;
     }
     return 0;
+}
+/**
+ * pass in memories array ad counter
+ */
+u16 coinCount(struct memory mems[], u16 c) {
+    for (int i = 0; i < 3; i++) {
+        if (mems[i].collected == 1 && mems[i].color != GRAY) {
+            c++;
+            mems[i].color = GRAY;
+        }
+    }
+    return c;
+}
+void checkCollect(struct memory mems[], player *p1) {
+    for (int i = 0; i < 3; i++) {
+        if (p1->x - mems[i].x < 5 && p1->y - mems[i].y < 5) {
+            mems[i].collected = 1;
+        }
+    }
+}
+void printCoins(struct memory mems[]) {
+    for (int i = 0; i < 3; i++) {
+        setPixel(mems[i].y,mems[i].x, mems[i].color);
+    }
 }

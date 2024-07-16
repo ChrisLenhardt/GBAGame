@@ -41,12 +41,13 @@ int main(void) {
   drawImageDMA(0,0,240,160,shallowsleep);
   struct enemy e1 = {0,0,5,5,RED};
   struct player p1 = {(WIDTH / 2 + 4), (HEIGHT / 2 + 3), 4, 3, GREEN};
-  struct oldPos oldPos;
-  struct oldPos oldPosEnemy;
   int vBlankCounterOffset = 0;
   char timerValue[2];
   int timerColor = WHITE;
   int timerValueLiteral;
+  struct memory mems[3];
+  int c = 0;
+  
 
   while (1) {
     currentButtons = BUTTONS; // Load the current state of the buttons
@@ -69,9 +70,23 @@ int main(void) {
         break;
       case PLAY:
         if (prevState != PLAY) {
+            c = 0;
             drawPlay();
             e1.x = 0;
             e1.y = 0;
+            mems[0].x = randint(10,230);
+            mems[1].x = randint(10,230);
+            mems[2].x = randint(10,230);
+            mems[0].y = randint(10,140);
+            mems[1].y = randint(10,140);
+            mems[2].y = randint(10,140);
+            mems[0].color = YELLOW;
+            mems[1].color = YELLOW;
+            mems[2].color = YELLOW;
+            mems[0].collected = 0;
+            mems[1].collected = 0;
+            mems[2].collected = 0;
+            printCoins(mems);
             vBlankCounterOffset = vBlankCounter;
             prevState = PLAY;
         }
@@ -83,25 +98,31 @@ int main(void) {
         }
           enemy *e1p = &e1;
           player *p1p = &p1;
-          oldPos = PlayState(p1p);
-          oldPosEnemy = enemyPlayState(e1p, p1p);
+          PlayState(p1p);
+          enemyPlayState(e1p, p1p);
+          checkCollect(mems, p1p);
+          c = coinCount(mems,c);
           timerValueLiteral = (vBlankCounter- vBlankCounterOffset) / 60;
           sprintf(timerValue, "%d", timerValueLiteral);
           if (timerValueLiteral > 20) {
             timerColor = RED;
           }
-          waitForVBlank();
-          drawRectDMA(0,60,42,20,GRAY);
-          drawCenteredString(0,60,40,20, timerValue ,timerColor);
+
+          fillScreenDMA(GRAY);
+          printCoins(mems);
           drawRectDMA(p1p->y,p1p->x,p1p->w,p1p->h,p1p->playerColor);
           drawRectDMA(e1p->y,e1p->x,e1p->w,e1p->h,e1p->playerColor);
-          drawRectDMA(oldPos.oldy,oldPos.oldx,oldPos.oldw,oldPos.oldh,GRAY);
-          drawRectDMA(oldPosEnemy.oldy,oldPosEnemy.oldx,oldPosEnemy.oldw,oldPosEnemy.oldh,GRAY);
+          drawCenteredString(140,10,10,10, timerValue ,timerColor);
+          waitForVBlank();
+
           if (isConsumed(p1p,e1p) == 1) {
             state = LOSE;
           }
           if (timerValueLiteral > 30) {
             state = LOSE;
+          }
+          if (c > 2) {
+            state = WIN;
           }
 
         

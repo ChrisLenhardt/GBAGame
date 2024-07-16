@@ -45,8 +45,8 @@ typedef struct enemy {
 typedef struct memory {
     u16 x;  //top left x
     u16 y;  //top left y
-    u16 size; //size of mem coin
     u16 color; //color of mem coin
+    u16 collected;
 } memory;
 typedef struct oldPos{
     u16 oldy;
@@ -57,5 +57,8 @@ typedef struct oldPos{
 void drawPlay(void);
 oldPos PlayState(player *p1);
 oldPos enemyPlayState(enemy *e1, player *p1);
-int isConsumed(player *p1, enemy *e1);
+void printCoins(struct memory mems[]);
+void checkCollect(struct memory mems[], player *p1);
+u16 coinCount(struct memory mems[], u16 c);
+u16 isConsumed(player *p1, enemy *e1);
 #endif
