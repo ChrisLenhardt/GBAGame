@@ -98,3 +98,9 @@ oldPos enemyPlayState(enemy *e1, player *p1) {
         struct oldPos oldpos = {oldy, oldx, oldw, oldh};
         return oldpos;
 }
+int isConsumed(player *p1, enemy *e1) {
+    if ((p1->x - e1->x) < 5 && (p1->y - e1->y) < 5) {
+        return 1;
+    }
+    return 0;
+}

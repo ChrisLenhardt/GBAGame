@@ -57,4 +57,5 @@ typedef struct oldPos{
 void drawPlay(void);
 oldPos PlayState(player *p1);
 oldPos enemyPlayState(enemy *e1, player *p1);
+int isConsumed(player *p1, enemy *e1);
 #endif

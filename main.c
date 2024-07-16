@@ -6,6 +6,8 @@
 #include "gba.h"
 #include "images/garbage.h"
 #include "images/shallowsleep.h"
+#include "images/lightfade.h"
+#include "images/awoke.h"
 
 extern player p1;
 /* TODO: */
@@ -80,17 +82,38 @@ int main(void) {
           drawRectDMA(e1p->y,e1p->x,e1p->w,e1p->h,e1p->playerColor);
           drawRectDMA(oldPos.oldy,oldPos.oldx,oldPos.oldw,oldPos.oldh,GRAY);
           drawRectDMA(oldPosEnemy.oldy,oldPosEnemy.oldx,oldPosEnemy.oldw,oldPosEnemy.oldh,GRAY);
+          if (isConsumed(p1p,e1p) == 1) {
+            state = LOSE;
+          } 
 
         
         
         break;
       case WIN:
-
-        // state = ?
+        if (prevState != WIN) {
+          drawImageDMA(0,0,240,160,awoke);
+          drawCenteredString(60,10,70,140,"You woke up!",BLACK);
+          prevState = WIN;
+        }
+        if (KEY_JUST_PRESSED(BUTTON_SELECT,BUTTONS,previousButtons)) {
+            p1.x = (WIDTH / 2 + 4);
+            p1.y = (HEIGHT / 2 + 3);
+            prevState = WIN;
+            state = START;
+        }
         break;
       case LOSE:
-
-        // state = ?
+        if (prevState != LOSE) {
+          drawImageDMA(0,0,240,160,lightfade);
+          drawCenteredString(100,45,160,100,"You Never Escape Slumber...",WHITE);
+          prevState = LOSE;
+        }
+        if (KEY_JUST_PRESSED(BUTTON_SELECT,BUTTONS,previousButtons)) {
+            p1.x = (WIDTH / 2 + 4);
+            p1.y = (HEIGHT / 2 + 3);
+            prevState = LOSE;
+            state = START;
+        }
         break;
     }
 
