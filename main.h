@@ -23,5 +23,31 @@
 * };
 *
 */
+// typedef struct state {
+//     int currentState;
+//     int nextState;
+// } state;
 
+typedef struct player {
+    u16 x;  //top left x
+    u16 y;  //top left y
+    u16 w;  //width of player
+    u16 h;  //height of player
+    u16 playerColor;    //color of player sprite
+} player;
+typedef struct enemy {
+    u16 x;  //top left x
+    u16 y;  //top left y
+    u16 w;  //width of enemy
+    u16 h;  //height of enemy
+    u16 playerColor;    //color of enemy sprite
+} enemy;
+typedef struct memory {
+    u16 x;  //top left x
+    u16 y;  //top left y
+    u16 size; //size of mem coin
+    u16 color; //color of mem coin
+} memory;
+void drawPlay(void);
+void PlayState(player *p1, u32 previousButtons, int * i);
 #endif

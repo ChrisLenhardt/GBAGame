@@ -16,7 +16,7 @@ void waitForVBlank(void) {
   // (1)
   // Write a while loop that loops until we're NOT in vBlank anymore:
   // (This prevents counting one VBlank more than once if your app is too fast)
-  while(SCANLINECOUNTER >= 160);
+  while(SCANLINECOUNTER > 160);
   // (2)
   // Write a while loop that keeps going until we're in vBlank:
   while(SCANLINECOUNTER < 160);
@@ -48,8 +48,8 @@ void setPixel(int row, int col, u16 color) {
   This function can be completed using `height` DMA calls. 
 */
 void drawRectDMA(int row, int col, int width, int height, volatile u16 color) {
+  DMA[3].src = &color;
   for (int r = 0; r < height; r++) {
-    DMA[3].src = &color;
     DMA[3].dst = &videoBuffer[OFFSET(row + r, col, WIDTH)];
     DMA[3].cnt = width | DMA_SOURCE_FIXED | DMA_DESTINATION_INCREMENT | DMA_16 | DMA_ON;
   }

@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "garbage.h": "c"
+        "garbage.h": "c",
+        "main.h": "c",
+        "gba.h": "c"
     }
 }
