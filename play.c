@@ -121,7 +121,10 @@ u16 coinCount(struct memory mems[], u16 c) {
 }
 void checkCollect(struct memory mems[], player *p1) {
     for (int i = 0; i < 3; i++) {
-        if (p1->x - mems[i].x < 5 && p1->y - mems[i].y < 5) {
+        int diffx = (p1->x+1 - mems[i].x) < 0 ? 240 : (p1->x+1 - mems[i].x);
+        int diffy = (p1->y+1 - mems[i].y) < 0 ? 160 : (p1->y+1 - mems[i].y);
+
+        if (diffx < 5 && diffy < 5) {
             mems[i].collected = 1;
         }
     }
