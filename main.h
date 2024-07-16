@@ -48,6 +48,12 @@ typedef struct memory {
     u16 size; //size of mem coin
     u16 color; //color of mem coin
 } memory;
+typedef struct oldPos{
+    u16 oldy;
+    u16 oldx;
+    u16 oldw;
+    u16 oldh;
+} oldPos;
 void drawPlay(void);
-void PlayState(player *p1, u32 previousButtons, int * i);
+oldPos PlayState(player *p1);
 #endif

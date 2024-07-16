@@ -35,9 +35,10 @@ int main(void) {
 
   // Load initial application state
   enum gba_state state = START;
+  enum gba_state prevState = START;
   drawImageDMA(0,0,240,160,shallowsleep);
   player p1 = {(WIDTH / 2 + 4), (HEIGHT / 2 + 3), 4, 3, GREEN};
-  int i = 0;
+  struct oldPos oldPos;
   while (1) {
     currentButtons = BUTTONS; // Load the current state of the buttons
 
@@ -47,6 +48,10 @@ int main(void) {
 
     switch (state) {
       case START:
+        if (prevState != START) {
+            drawImageDMA(0,0,240,160,shallowsleep);
+            prevState = START;
+        }
         waitForVBlank();
         drawCenteredString(60,160,70,140,"shallowsleep",BLACK);
         if (KEY_JUST_PRESSED(BUTTON_START,currentButtons,previousButtons)) {
@@ -54,16 +59,23 @@ int main(void) {
         }
         break;
       case PLAY:
-        drawPlay();
-        while (i == 0) {
+        if (prevState != PLAY) {
+            drawPlay();
+            prevState = PLAY;
+        }
+        if (KEY_JUST_PRESSED(BUTTON_SELECT,BUTTONS,previousButtons)) {
+            p1.x = (WIDTH / 2 + 4);
+            p1.y = (HEIGHT / 2 + 3);
+            prevState = PLAY;
+            state = START;
+        }
           player *p1p = &p1;
+          oldPos = PlayState(p1p);
+          waitForVBlank();
           drawRectDMA(p1p->y,p1p->x,p1p->w,p1p->h,p1p->playerColor);
-          PlayState(p1p, previousButtons, &i);
-          if (KEY_JUST_PRESSED(BUTTON_SELECT,BUTTONS,previousButtons)) {
-            break;
-            state = WIN;
-        }
-        }
+          drawRectDMA(oldPos.oldy,oldPos.oldx,oldPos.oldw,oldPos.oldh,GRAY);
+        
+        
         break;
       case WIN:
 
