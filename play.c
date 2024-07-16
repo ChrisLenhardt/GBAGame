@@ -99,7 +99,10 @@ oldPos enemyPlayState(enemy *e1, player *p1) {
         return oldpos;
 }
 int isConsumed(player *p1, enemy *e1) {
-    if ((p1->x - e1->x) < 5 && (p1->y - e1->y) < 5) {
+    int diffx = (p1->x - e1->x) < 0 ? 240 : (p1->x - e1->x);
+    int diffy = (p1->y - e1->y) < 0 ? 160 : (p1->y - e1->y);
+
+    if (diffx < 5 && diffy < 5) {
         return 1;
     }
     return 0;

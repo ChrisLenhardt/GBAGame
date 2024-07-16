@@ -123,6 +123,8 @@ void waitForVBlank(void);
 //                       MISC
 // ---------------------------------------------------------------------------
 #define UNUSED(param) ((void)((param)))
+#define REG_TM2D (*(volatile unsigned short *) 0x4000100)
+#define REG_TM2CNT (*(volatile unsigned short *) 0x4000102)
 
 /*
  * Generates a pseudo-random number between min and max.

@@ -43,6 +43,11 @@ int main(void) {
   struct player p1 = {(WIDTH / 2 + 4), (HEIGHT / 2 + 3), 4, 3, GREEN};
   struct oldPos oldPos;
   struct oldPos oldPosEnemy;
+  int vBlankCounterOffset = 0;
+  char timerValue[2];
+  int timerColor = WHITE;
+  int timerValueLiteral;
+
   while (1) {
     currentButtons = BUTTONS; // Load the current state of the buttons
 
@@ -65,6 +70,9 @@ int main(void) {
       case PLAY:
         if (prevState != PLAY) {
             drawPlay();
+            e1.x = 0;
+            e1.y = 0;
+            vBlankCounterOffset = vBlankCounter;
             prevState = PLAY;
         }
         if (KEY_JUST_PRESSED(BUTTON_SELECT,BUTTONS,previousButtons)) {
@@ -77,16 +85,25 @@ int main(void) {
           player *p1p = &p1;
           oldPos = PlayState(p1p);
           oldPosEnemy = enemyPlayState(e1p, p1p);
+          timerValueLiteral = (vBlankCounter- vBlankCounterOffset) / 60;
+          sprintf(timerValue, "%d", timerValueLiteral);
+          if (timerValueLiteral > 20) {
+            timerColor = RED;
+          }
           waitForVBlank();
+          drawRectDMA(0,60,42,20,GRAY);
+          drawCenteredString(0,60,40,20, timerValue ,timerColor);
           drawRectDMA(p1p->y,p1p->x,p1p->w,p1p->h,p1p->playerColor);
           drawRectDMA(e1p->y,e1p->x,e1p->w,e1p->h,e1p->playerColor);
           drawRectDMA(oldPos.oldy,oldPos.oldx,oldPos.oldw,oldPos.oldh,GRAY);
           drawRectDMA(oldPosEnemy.oldy,oldPosEnemy.oldx,oldPosEnemy.oldw,oldPosEnemy.oldh,GRAY);
           if (isConsumed(p1p,e1p) == 1) {
             state = LOSE;
-          } 
+          }
+          if (timerValueLiteral > 30) {
+            state = LOSE;
+          }
 
-        
         
         break;
       case WIN:
